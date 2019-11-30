@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Rotator : MonoBehaviour
-{
+public class Rotator : MonoBehaviour {
+    public float timeLeft = 3;
+    public bool useTime = false;
     // Update is called once per frame
-    void Update()
-    {
-        transform.Rotate(new Vector3(15 , 30 , 45) * Time.deltaTime);
+    void FixedUpdate () {
+        Vector3 direction = new Vector3 (Random.value, Random.value, Random.value);
+        transform.Rotate (direction);
+        timeLeft -= Time.deltaTime;
+        if (timeLeft < 0 && useTime == true) {
+            this.transform.localScale = (new Vector3 (0, 0, 0));
+        }
     }
 }

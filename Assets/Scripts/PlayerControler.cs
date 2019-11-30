@@ -1,47 +1,52 @@
 ﻿using System.Collections;
-using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-public class PlayerControler : MonoBehaviour
-{
+public class PlayerControler : MonoBehaviour {
     public float speed;
     private Rigidbody rb;
     public Text countText;
     private int count;
-
-    private void Start()
-    {
-        rb = GetComponent<Rigidbody>();
+    public GameObject finish;
+    public string scene = "scene";
+    public bool useTime = false;
+    public float timeLeft = 3;
+    private void Start () {
+        rb = GetComponent<Rigidbody> ();
         count = 0;
-        setCountText();
+        setCountText ();
     }
 
-    private void FixedUpdate()
-    {
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
+    private void FixedUpdate () {
+        timeLeft -= Time.deltaTime;
+        if (timeLeft > 0 && useTime == true) {
 
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+        } else {
+            float moveHorizontal = Input.GetAxis ("Horizontal");
+            float moveVertical = Input.GetAxis ("Vertical");
+            Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
+            rb.AddForce (movement * speed);
+        }
 
-        rb.AddForce(movement * speed);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Pick Up"))
-        {
-            other.gameObject.SetActive(false);
+    private void OnTriggerEnter (Collider other) {
+        if (other.gameObject.CompareTag ("Pick Up")) {
+            other.gameObject.SetActive (false);
             count = count + 1;
-            setCountText();
+            setCountText ();
+        }
+        if (other.gameObject.CompareTag ("Finish")) {
+            SceneManager.LoadScene (scene);
         }
     }
 
-    void setCountText()
-    {
-        countText.text = "Count : " + count.ToString();
-        if (count >= 12)
-        {
-            countText.text = "You Win!";
+    void setCountText () {
+        countText.text = "Count : " + count.ToString ();
+        if (count >= 12) {
+            countText.text = "Collect the Green object";
+            finish.SetActive (true);
         }
     }
 }
